@@ -10,7 +10,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 from configs.llm_config import Blueberry80GBConfig, Blueberry24GBConfig
 from configs.dataset_config import DataConfig
-from training.trainer import train_moe_model
+from training.trainer import train_minimal_llm
 from utils.helpers import set_seed
 from utils.logger import setup_logging
 
@@ -163,7 +163,7 @@ def prepare_datasets(data_cfg, tokenizer, cache_dir="./processed_data"):
 
 def main():
     logger = setup_logging(log_dir="./logs")
-    logger.info("Starting MoE training")
+    logger.info("Starting training")
 
     print_system_info()
     set_seed(42)
@@ -238,13 +238,6 @@ def main():
     # Safety factor 2.0 to ensure enough data
     avg_tokens_per_doc = 1000
     safety_factor = 2.0
-    
-    # Calculate max_steps from train_tokens
-    tokens_per_step = config.batch_size * config.max_seq_len * config.gradient_accumulation_steps
-    config.max_steps = int(config.train_tokens / tokens_per_step)
-    if config.max_steps < 1:
-        config.max_steps = 1
-        
     total_tokens_needed = config.train_tokens
     calc_num_docs = int((total_tokens_needed / avg_tokens_per_doc) * safety_factor)
     
@@ -253,11 +246,10 @@ def main():
         calc_num_docs = 100
         
     print(f"Dynamic Data Calculation:")
-    print(f"  Steps: {config.max_steps}, Batch: {config.batch_size}, Seq: {config.max_seq_len}")
-    print(f"  Total tokens needed: {total_tokens_needed:,}")
+    print(f"  Batch: {config.batch_size}, Seq: {config.max_seq_len}, Accumulation: {config.gradient_accumulation_steps}")
+    print(f"  Target tokens: {total_tokens_needed:,}")
     print(f"  Est. docs needed (factor {safety_factor}): {calc_num_docs:,}")
     
-    # config.num_documents = calc_num_docs # Removed from config
     num_docs = calc_num_docs
 
     print("Loading dataset with Hugging Face Datasets API...")
@@ -279,20 +271,6 @@ def main():
     
     logger.info(f"Train sequences: {len(train_ds):,}, Val sequences: {len(val_ds):,}")
 
-    # Check for sufficient data
-    total_needed = config.max_steps * config.batch_size
-    if len(train_ds) < total_needed:
-        msg = (
-            f"Insufficient training data! "
-            f"Need {total_needed} sequences (max_steps={config.max_steps} * batch_size={config.batch_size}) "
-            f"but only have {len(train_ds)} sequences. "
-            f"The model will overfit if data repeats. "
-            f"To fix: increase inferred num_documents (currently {num_docs}) "
-            f"or reduce max_steps."
-        )
-        logger.error(msg)
-        raise ValueError(msg)
-
     loader_args = dict(
         batch_size=config.batch_size,
         num_workers=2,
@@ -306,8 +284,8 @@ def main():
     print("-" * 70)
     print(f"d_model: {config.d_model}, layers: {config.n_layers}, heads: {config.n_heads}")
     print(f"ff dim: {config.d_ff}")
-    print(f"experts: {getattr(config, 'num_experts', 'N/A')}, top‑k: {getattr(config, 'expert_top_k', 'N/A')}")
-    print(f"steps: {config.max_steps}, batch size: {config.batch_size}")
+    print(f"train tokens: {config.train_tokens:,}")
+    print(f"batch size: {config.batch_size}")
     print(f"vocab size: {config.vocab_size}\n")
     logger.info(f"Model configuration: {vars(config)}")
 
@@ -316,7 +294,7 @@ def main():
     start = time.time()
 
     # Train the model (checkpoint loading handled by trainer if load_checkpoint is provided)
-    model, metrics, _ = train_moe_model(
+    model, metrics, _ = train_minimal_llm(
         config, 
         train_loader, 
         val_loader, 
