@@ -184,7 +184,7 @@ def main():
     parser.add_argument("--batch_size", type=int, help="Override batch_size")
     parser.add_argument("--gradient_accumulation_steps", type=int, help="Override gradient_accumulation_steps")
     parser.add_argument("--target_train_loss", type=float, default=4.5, help="Stop training when training loss reaches this value")
-    parser.add_argument("--log_every", type=int, default=1, help="Logging frequency in steps")
+    parser.add_argument("--log_every", type=int, default=100, help="Logging frequency in steps")
     parser.add_argument("--warmup", type=str, default="true", help="Whether to perform untimed compilation warmup (true/false)")
 
     args = parser.parse_args()
