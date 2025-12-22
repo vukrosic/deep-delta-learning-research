@@ -11,7 +11,8 @@ To qualify for the **Speedrun** (4.5 loss / 3.5 loss / 1B tokens) leaderboard, y
 1.  Surpass the record (training loss of **≤ 4.5**, training loss of **≤ 3.5**, or fastest training time on **8M tokens** / **1B tokens**).
 2.  Use the data mentioned in the [SETUP_INTRUCTIONS](docs/SETUP_INSTRUCTIONS.md)
 3.  The official metric is **Active Training Time**. Setup and compilation overhead (`Setup & Compilation Time`) is excluded.
-4.  Keep the added code minimal, clean and readable.
+4.  Measure your baseline (current code on your hardware) and compare your improvements against that baseline. Explain it to the PR description concisely.
+5.  Keep the added code minimal, clean and readable.
 
 ## ⚡ 8M Tokens Speedrun
 *Goal: Fastest Time to train 8M tokens*
@@ -58,13 +59,13 @@ To qualify for the **Speedrun** (4.5 loss / 3.5 loss / 1B tokens) leaderboard, y
 | - | - | - | - | - | - |
 
 
-## 🤝 Compute Sponsorship & Verification
+## 🤝 GPUs: Free & Paid
 **You may rent 4090 affordably at**
-[Salad](https://salad.com/pricing) | [Novita](https://novita.ai/pricing?gpu=1) | [VastAI](https://vast.ai/pricing) - A lot of GPU providers also give 50% off on spot billing.
+[Salad](https://salad.com/pricing) | [Novita](https://novita.ai/pricing?gpu=1) [(or use our affiliate to help us get more compute ❤️)](https://novita.ai/?ref=mjqyndm&utm_source=affiliate) | [VastAI](https://vast.ai/pricing) - A lot of GPU providers also give 50% off on spot billing.
 
-You may also use free L4 at [LightningAI](https://lightning.ai/) - just make sure to measure your baseline as well and then compare. Once you break the record, we will measure it on 4090.
+**Free GPU Alternatives:**
+- **Lightning AI**: You can use the free **L4 GPU**.
+- **Google Colab**: Use the free T4 or paid A100.
+- **Tip**: If the model doesn't fit in your GPU memory, you can **reduce the model size** (e.g., reduce `batch_size`, `n_layer`, or `n_embd` in `configs/llm_config.py`).
 
-**Can't access a GPU? We've got you.**
-
-1.  **Verification**: If you optimize the code but can't verify the exact time, submit a Pull Request. We will run your code on our 4090 to confirm the record!
-2.  **Sponsorship**: If you have a great idea (e.g., a new architecture) but no GPU, open an Issue/Ticket. If the idea looks promising, we will run the experiment for you and credit you.
+Once you create improvement, we will measure it on 4090.
