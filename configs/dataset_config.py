@@ -14,7 +14,7 @@ def get_latest_dataset(base_dir: str = "./processed_data") -> str:
     """
     if not os.path.exists(base_dir):
         logger.warning(f"Directory {base_dir} does not exist, using default")
-        return "processed_data/speedrun_40M"
+        return "processed_data/research_40M"
     
     # First, try to find pretrain_mix_* datasets
     pretrain_patterns = glob.glob(os.path.join(base_dir, "pretrain_mix_*"))
@@ -37,7 +37,7 @@ def get_latest_dataset(base_dir: str = "./processed_data") -> str:
     
     # Last resort: use default
     logger.warning(f"No datasets found in {base_dir}, using default")
-    return "processed_data/speedrun_40M"
+    return "processed_data/research_40M"
 
 @dataclass
 class DataConfig:

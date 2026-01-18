@@ -1,4 +1,4 @@
-# this script makes sure the speedrun training is reproducible
+# this script makes sure the research training is reproducible
 # by running training NUM_RUNS times
 # training time should be similar for all runs
 
@@ -25,7 +25,7 @@ def run_training(run_id):
         "python", "train_llm.py",
         "--output_dir", output_dir,
         "--compile", "true",
-        "--dataset_path", "processed_data/speedrun_40M",
+        "--dataset_path", "processed_data/research_40M",
         "--train_tokens", str(TARGET_TOKENS)
     ]
     
@@ -60,7 +60,7 @@ def run_training(run_id):
 def main():
     results = []
     
-    print(f"=== Reproducing Speedrun (Target: {TARGET_TOKENS:,} Tokens) ===")
+    print(f"=== Reproducing Research Run (Target: {TARGET_TOKENS:,} Tokens) ===")
     print(f"This script will train the model {NUM_RUNS} times to verify consistency.")
     
     for i in range(1, NUM_RUNS + 1):

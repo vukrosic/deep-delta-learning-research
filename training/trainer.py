@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torch.amp import autocast
 from tqdm import tqdm
 from typing import List, Optional, Callable, Dict, Any
-from configs.llm_config import BlueberryConfig
+from configs.llm_config import DeepDeltaConfig
 from models.llm import MinimalLLM
 from optimizers.muon import Muon
 from training.evaluation import evaluate_model
@@ -44,7 +44,7 @@ class EarlyStopping:
 
 
 
-def setup_muon_optimizer(model: nn.Module, config: BlueberryConfig):
+def setup_muon_optimizer(model: nn.Module, config: DeepDeltaConfig):
     """Setup Muon optimizer with hybrid approach"""
     muon_params = []
     adamw_params = []
@@ -74,7 +74,7 @@ def setup_muon_optimizer(model: nn.Module, config: BlueberryConfig):
 
 def train_model(
     model: nn.Module,
-    config: BlueberryConfig,
+    config: DeepDeltaConfig,
     train_loader: DataLoader,
     val_loader: DataLoader,
     optimizers: List[torch.optim.Optimizer],
@@ -364,7 +364,7 @@ def train_model(
 
 def warmup_compiled_kernels(
     model: nn.Module,
-    config: BlueberryConfig,
+    config: DeepDeltaConfig,
     train_loader: DataLoader,
     device: torch.device,
     num_steps: int = 3
@@ -426,7 +426,7 @@ def warmup_compiled_kernels(
     print("✅ Kernels compiled and cached")
 
 def train_minimal_llm(
-    config: BlueberryConfig,
+    config: DeepDeltaConfig,
     train_loader: DataLoader,
     val_loader: DataLoader,
     output_dir: Optional[str] = None,
@@ -649,10 +649,10 @@ def train_minimal_llm(
     
     # Final Output
     print("\n" + "="*70)
-    print(" SPEEDRUN RESULTS")
+    print(" EXPERIMENT RESULTS")
     print("="*70)
     print(f"Warmup & Setup:                  {format_time(setup_time)}")
-    print(f"Training Time (⏱️ Speedrun):      {format_time(total_training_time)}")
+    print(f"Training Time:                    {format_time(total_training_time)}")
     print(f"Total Tokens:                    {tokens_seen:,}")
     print("-" * 70)
     print(f"Final Train Loss:                {final_eval.get('train_loss', 0.0):.4f}")

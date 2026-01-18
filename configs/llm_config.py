@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 
 
 @dataclass
-class BlueberryConfig:
+class DeepDeltaConfig:
     # Model architecture (88M Params - Blueberry-Nano)
     d_model: int = 512       
     n_heads: int = 8         
