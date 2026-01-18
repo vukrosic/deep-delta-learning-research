@@ -1,6 +1,7 @@
 # Deep Delta Learning
 
 - paper: https://arxiv.org/pdf/2601.00417
+- code added here: https://github.com/Open-Superintelligence-Lab/5-dollar-llm/pull/95/changes
 
 Research repository dedicated to exploring and optimizing **Deep Delta Learning (DDL)** - a novel approach to neural architecture residual updates.
 
